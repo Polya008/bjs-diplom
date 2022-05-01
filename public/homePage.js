@@ -5,29 +5,92 @@ logoutButton.action = () => {
 			location.reload();
 		} 
 	})
-}
+};
 
 ApiConnector.current(response => {
 	if(response.success){
 		ProfileWidget.showProfile(response.data);
 	} 
-})
+});
 
 
 const ratesBoard = new RatesBoard();
+function getRates(){
 	ApiConnector.getStocks(response => {
-		if(callback.success) {
+		if(response.success) {
 			ratesBoard.clearTable();
-			ratesBoard.fillTable(callback.data);
-	};
-	setInterval(() => getStocks(), 1000);
-});
+			ratesBoard.fillTable(response.data);
+		}
+	})
+}
+setInterval(getRates, 60000);
 
 
 const moneyManager = new MoneyManager();
 moneyManager.addMoneyCallback = (data) => {
-	ApiConnector.addMoney({ currency, amount }, callback)
-}
+	ApiConnector.addMoney(data, response =>  {
+		if(response.success){
+			ProfileWidget.showProfile(response.data);
+			moneyManager.setMessage(isSucces, 'Ваш баланс пополнен');
+		} else {
+			moneyManager.setMessage(response.error);
+		}
+	}
+)};
 
+moneyManager.conversionMoneyCallback = (money) => {
+	ApiConnector.convertMoney(money, response => {
+		if(response.success){
+			ProfileWidget.showProfile(response.data);
+			moneyManager.setMessage(isSucces);
+		} else {
+			moneyManager.setMessage(response.error);
+		}
+	}
+)};
 
+moneyManager.sendMoneyCallback = (send) => {
+	ApiConnector.transferMoney(send, response => {
+		if(response.success){
+			ProfileWidget.showProfile(response.data);
+			moneyManager.setMessage(isSucces);
+		} else {
+			moneyManager.setMessage(response.error);
+		}
+	}
+)};
 
+const myFavoritesWidget = new FavoritesWidget();
+	ApiConnector.getFavorites(favore => {
+		if(favore.success){
+			myFavoritesWidget.clearTable();
+			myFavoritesWidget.fillTable(favore.data);
+			moneyManager.updateUserList(favore.data);
+		}
+	});
+
+myFavoritesWidget.addUserCallback = (myUsers) => {
+	ApiConnector.addUserToFavorites(myUsers, response => {
+		if(response.success){
+			myFavoritesWidget.clearTable();
+			myFavoritesWidget.fillTable(response.data);
+			moneyManager.updateUserList(myUsers);
+			moneyManager.setMessage(response.data);
+		} else {
+			moneyManager.setMessage(response.error);
+		}
+	}
+)};
+
+myFavoritesWidget.removeUserCallback = (goAway) => {
+	ApiConnector.removeUserFromFavorites(goAway, response => {
+		if(response.success){
+			myFavoritesWidget.clearTable();
+			myFavoritesWidget.fillTable(goAway.data);
+			moneyManager.updateUserList(response.data);
+			moneyManager.setMessage(response.data);
+		} else {
+			moneyManager.setMessage(response.error);
+		}
+	}
+)};
