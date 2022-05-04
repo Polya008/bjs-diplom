@@ -53,7 +53,7 @@ moneyManager.sendMoneyCallback = (send) => {
 	ApiConnector.transferMoney(send, response => {
 		if(response.success){
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(isSucces);
+			moneyManager.setMessage(response.data);//был (isSucces)
 		} else {
 			moneyManager.setMessage(response.error);
 		}
@@ -74,10 +74,10 @@ myFavoritesWidget.addUserCallback = (myUsers) => {
 		if(response.success){
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(response.data);
-			moneyManager.updateUserList(myUsers);
-			moneyManager.setMessage(response.data);
+			moneyManager.updateUserList(response.data);//??
+			myFavoritesWidget.favoritesMessageBox(response.data);
 		} else {
-			moneyManager.setMessage(response.error);
+			myFavoritesWidget.favoritesMessageBox(response.error);
 		}
 	}
 )};
@@ -88,9 +88,9 @@ myFavoritesWidget.removeUserCallback = (goAway) => {
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(goAway.data);
 			moneyManager.updateUserList(response.data);
-			moneyManager.setMessage(response.data);
+			myFavoritesWidget.favoritesMessageBox(response.data);
 		} else {
-			moneyManager.setMessage(response.error);
+			myFavoritesWidget.favoritesMessageBox(response.error);
 		}
 	}
 )};
