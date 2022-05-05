@@ -23,6 +23,7 @@ function getRates(){
 		}
 	})
 }
+getRates();
 setInterval(getRates, 60000);
 
 
@@ -53,9 +54,9 @@ moneyManager.sendMoneyCallback = (send) => {
 	ApiConnector.transferMoney(send, response => {
 		if(response.success){
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(response.data);//был (isSucces)
+			moneyManager.setMessage(response.data, "Средства переведены");
 		} else {
-			moneyManager.setMessage(response.error);
+			moneyManager.setMessage(response.error, "Упс! что-то пошло не так");
 		}
 	}
 )};
@@ -65,32 +66,32 @@ const myFavoritesWidget = new FavoritesWidget();
 		if(favore.success){
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(favore.data);
-			moneyManager.updateUserList(favore.data);
+			moneyManager.updateUsersList(favore.data);
 		}
 	});
 
-myFavoritesWidget.addUserCallback = (myUsers) => {
-	ApiConnector.addUserToFavorites(myUsers, response => {
+myFavoritesWidget.addUserCallback = (data) => {
+	ApiConnector.addUserToFavorites(data, response => {
 		if(response.success){
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(response.data);
-			moneyManager.updateUserList(response.data);//??
-			myFavoritesWidget.favoritesMessageBox(response.data);
+			moneyManager.updateUsersList(response.data);
+			moneyManager.setMessage(response.data);
 		} else {
-			myFavoritesWidget.favoritesMessageBox(response.error);
+			moneyManager.setMessage(response.error);
 		}
 	}
 )};
 
-myFavoritesWidget.removeUserCallback = (goAway) => {
-	ApiConnector.removeUserFromFavorites(goAway, response => {
+myFavoritesWidget.removeUserCallback = (data) => {
+	ApiConnector.removeUserFromFavorites(data, response => {
 		if(response.success){
 			myFavoritesWidget.clearTable();
-			myFavoritesWidget.fillTable(goAway.data);
-			moneyManager.updateUserList(response.data);
-			myFavoritesWidget.favoritesMessageBox(response.data);
+			myFavoritesWidget.fillTable(response.data);
+			moneyManager.updateUsersList(response.data);
+			moneyManager.setMessage(response.data);
 		} else {
-			myFavoritesWidget.favoritesMessageBox(response.error);
+			moneyManager.setMessage(response.error);
 		}
 	}
 )};
