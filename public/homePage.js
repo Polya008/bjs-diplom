@@ -32,7 +32,7 @@ moneyManager.addMoneyCallback = (data) => {
 	ApiConnector.addMoney(data, response =>  {
 		if(response.success){
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(true, isSucces, 'Ваш баланс пополнен');
+			moneyManager.setMessage(true, 'Ваш баланс пополнен');
 		} else {
 			moneyManager.setMessage(false, response.error);
 		}
@@ -43,7 +43,7 @@ moneyManager.conversionMoneyCallback = (money) => {
 	ApiConnector.convertMoney(money, response => {
 		if(response.success){
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(true, isSucces, 'Конвертация прошла успешно');
+			moneyManager.setMessage(true, 'Конвертация прошла успешно');
 		} else {
 			moneyManager.setMessage(false, response.error);
 		}
@@ -54,9 +54,9 @@ moneyManager.sendMoneyCallback = (send) => {
 	ApiConnector.transferMoney(send, response => {
 		if(response.success){
 			ProfileWidget.showProfile(response.data);
-			moneyManager.setMessage(true, response.data, "Средства переведены");
+			moneyManager.setMessage(true, "Средства переведены");
 		} else {
-			moneyManager.setMessage(false, response.error, "Упс! что-то пошло не так");
+			moneyManager.setMessage(false, response.error);
 		}
 	}
 )};
@@ -76,7 +76,7 @@ myFavoritesWidget.addUserCallback = (data) => {
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(response.data);
 			moneyManager.updateUsersList(response.data);
-			myFavoritesWidget.setMessage(true, response.data);
+			myFavoritesWidget.setMessage(true, 'Пользователь успешно добавлен');
 		} else {
 			myFavoritesWidget.setMessage(false,response.error);
 		}
@@ -89,9 +89,9 @@ myFavoritesWidget.removeUserCallback = (data) => {
 			myFavoritesWidget.clearTable();
 			myFavoritesWidget.fillTable(response.data);
 			moneyManager.updateUsersList(response.data);
-			myFavoritesWidget.setMessage(response.data);
+			myFavoritesWidget.setMessage(true, /*response.data*/ 'Пользователь удалён из списка избранного');
 		} else {
-			myFavoritesWidget.setMessage(response.error);
+			myFavoritesWidget.setMessage(false, response.error);
 		}
 	}
 )};
